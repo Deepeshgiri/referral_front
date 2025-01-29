@@ -10,7 +10,7 @@ const Signup = () => {
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState(1); // 1 = Phone, 2 = OTP
   const [error, setError] = useState(null);
-  const [countryCode, setCountryCode] = useState('+91'); // Default country code
+  const [countryCode, setCountryCode] = useState('+1'); // Default country code
   const { login } = useContext(AuthContext); // Access login function from AuthContext
   const navigate = useNavigate();
   const { code } = useParams(); // Get referral code from URL params

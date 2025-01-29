@@ -12,7 +12,7 @@ const Login = () => {
   const [otpSent, setOtpSent] = useState(false); // To track OTP step
   const { login } = useContext(AuthContext); // Get login function from context
   const navigate = useNavigate();
-  const [countryCode, setCountryCode] = useState('+91');
+  const [countryCode, setCountryCode] = useState('+1');
 
   // Combine countryCode and phone into a single phone field
   const getFullPhoneNumber = () => {

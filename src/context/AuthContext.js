@@ -47,11 +47,12 @@ export const AuthProvider = ({ children }) => {
 
   // Login function for normal users (OTP-based)
   const login = (authToken, userData) => {
-    setIsAuthenticated(true);
+    console.log('login', authToken, userData);
     setToken(authToken);
     setUser({ ...userData, role: 'user' });
     localStorage.setItem('authToken', authToken);
     localStorage.setItem('user', JSON.stringify({ ...userData, role: 'user' }));
+    setIsAuthenticated(true);
   };
 
   // Login function for admin (username/password-based)
