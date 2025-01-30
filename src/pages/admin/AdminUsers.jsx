@@ -178,6 +178,8 @@ import React, { useState, useEffect } from 'react';
 import { constant } from '../../Constant';
 
 const AdminUsers = () => {
+
+  const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState(null); // Track the user being edited
@@ -226,6 +228,15 @@ const AdminUsers = () => {
     });
   };
 
+ // Filter users based on the search term
+ const filteredUsers = users.filter(
+  (user) =>
+    user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+
   // Save edited user data
   const handleSave = async () => {
     try {
@@ -258,42 +269,63 @@ const AdminUsers = () => {
   };
 
   if (loading) {
-    return <div>Loading users...</div>;
+    return setLoading;
   }
 
+ 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Manage Users</h1>
 
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search by name or phone"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 rounded w-full"
+        />
+      </div>
+
       {/* User Table */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full">
-          <thead className="bg-gray-100">
+          <thead className="bg-gradient-to-r from-blue-400 via-green-400 to-pink-400 text-white">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Stage</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Phone</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">ID</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Name</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Stage</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Points</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Refer count</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Phone</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="border-b">
+            {filteredUsers.map((user, index) => (
+              <tr
+                key={user.id}
+                className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'} hover:bg-gray-200`}
+              >
                 <td className="px-6 py-4 text-sm text-gray-700">{user.id}</td>
                 <td className="px-6 py-4 text-sm text-gray-700">
                   {user.first_name} {user.last_name}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-700">{user.stage}</td>
+                <td className="px-6 py-4 text-sm text-gray-700">{user.points}</td>
+                <td className="px-6 py-4 text-sm text-gray-700">{user.referral_count}</td>
                 <td className="px-6 py-4 text-sm text-gray-700">{user.phone}</td>
                 <td className="px-6 py-4 text-sm text-gray-700">
                   <button
                     onClick={() => handleEdit(user)}
-                    className="text-blue-500 hover:text-blue-700"
+                    className="text-blue-500 hover:text-blue-700 transition-all duration-200"
                   >
                     Edit
                   </button>
-                  <button className="text-red-500 hover:text-red-700 ml-4">Delete</button>
+                  <button className="text-red-500 hover:text-red-700 ml-4 transition-all duration-200">
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -319,7 +351,7 @@ const AdminUsers = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Stage</label>
                 <input
-                  type="stage"
+                  type="text"
                   value={editedUser.stage || ''}
                   onChange={(e) => handleInputChange(e, 'stage')}
                   className="border p-2 rounded w-full"
@@ -354,6 +386,5 @@ const AdminUsers = () => {
       )}
     </div>
   );
-};
-
+}
 export default AdminUsers;

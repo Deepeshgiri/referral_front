@@ -13,7 +13,10 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Referral Dashboard</h1>
+        <div className=' container flex justify-start items-center'>
+        <img src="/assets/images/website/logo.png" alt="Logo" className="h-12 w-12 m-0" />
+        <h1 className="text-2xl font-bold"> <u className=' animate-pulse font-extrabold'>MS TAX</u> Referral</h1>
+        </div>
         <div className="flex items-center space-x-4">
           <button
             onClick={toggleTheme}
