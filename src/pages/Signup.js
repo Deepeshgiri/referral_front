@@ -14,13 +14,13 @@ const Signup = () => {
   const { login } = useContext(AuthContext); // Access login function from AuthContext
   const navigate = useNavigate();
   const { code } = useParams(); // Get referral code from URL params
-  const [referralCode, setReferralCode] = useState('');
+  //const [referralCode, setReferralCode] = useState('');
 
   // Set referral code from URL params on component mount
   useEffect(() => {
-    if (code) {
-      setReferralCode(code);
-    }
+    // if (code) {
+    //   setReferralCode(code);
+    // }
     const oldToken = localStorage.getItem('token');
     const oldUser = localStorage.getItem('user');
     if (oldToken && oldUser) {

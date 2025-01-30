@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { constant } from '../Constant';
+
 import { apiCaller } from '../utils/Apis';
 
 
@@ -26,7 +26,7 @@ const Login = () => {
       const fullPhone = getFullPhoneNumber(); // Combine countryCode and phone
 
       // Use the apiCaller to send OTP
-      const response = await apiCaller.post('/api/login/send-otp', { phone: fullPhone });
+       await apiCaller.post('/api/login/send-otp', { phone: fullPhone });
 
       // If the response is successful, move to the OTP verification step
       setOtpSent(true);
