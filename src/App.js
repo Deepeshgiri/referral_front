@@ -15,6 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'; // Admin Dashboard
 import AdminUsers from './pages/admin/AdminUsers'; // Admin Users Page
 import AdminLogin from './pages/admin/AdminLogin';
 import { LoadingProvider } from './context/LoadingContext';
+import AdminSettings from './pages/admin/AdminSettings';
 
 // import Settings from './pages/Settings';
 
@@ -97,6 +98,7 @@ const AdminLayout = () => {
           <Routes>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path='/admin/settings' element ={<AdminSettings/>}/>
             <Route path="*" element={<Navigate to="/admin/dashboard" />} />
           </Routes>
         </div>
