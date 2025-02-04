@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { apiCaller } from '../../utils/Apis'; // Import the ApiCaller class
-
+import { apiCaller } from '../../utils/Apis';
 
 const AdminSettings = () => {
-  const [activeTab, setActiveTab] = useState('stages');
   const [stages, setStages] = useState([]);
-  const [rewards, setRewards] = useState([]);
-  const [criteria, setCriteria] = useState([]);
-
   const [newStage, setNewStage] = useState('');
-  const [newReward, setNewReward] = useState('');
-  const [newCriteria, setNewCriteria] = useState('');
+  const [editingStage, setEditingStage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch stages, rewards, and criteria from the API
   useEffect(() => {
-    const fetchSettingsData = async () => {
+    const fetchStages = async () => {
       try {
         setLoading(true);
         const stageData = await apiCaller.get('/api/admin/stages');
-        const rewardData = await apiCaller.get('/api/admin/rewards');
-        const criteriaData = await apiCaller.get('/api/admin/criteria');
-        
-        setStages(stageData.stages);
-        setRewards(rewardData.rewards);
-        setCriteria(criteriaData.criteria);
+        setStages(stageData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching stages:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchSettingsData();
+    fetchStages();
   }, []);
 
-  // Handle creating a new stage
   const handleCreateStage = async () => {
     try {
       setLoading(true);
-      const stage = await apiCaller.post('/api/admin/stages', { name: newStage });
+      const stage = await apiCaller.post('/api/admin/stages', { stage_name: newStage });
       setStages([...stages, stage]);
       setNewStage('');
     } catch (error) {
@@ -48,168 +35,101 @@ const AdminSettings = () => {
     }
   };
 
-  // Handle creating a new reward
-  const handleCreateReward = async () => {
+  const handleDeleteStage = async (id) => {
     try {
       setLoading(true);
-      const reward = await apiCaller.post('/api/admin/rewards', { name: newReward });
-      setRewards([...rewards, reward]);
-      setNewReward('');
+      await apiCaller.delete(`/api/admin/stages/${id}`);
+      setStages(stages.filter(stage => stage.id !== id));
     } catch (error) {
-      console.error('Error creating reward:', error);
+      console.error('Error deleting stage:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle creating new criteria
-  const handleCreateCriteria = async () => {
+  const handleUpdateStage = async () => {
+    if (!editingStage) return;
     try {
       setLoading(true);
-      const criteriaItem = await apiCaller.post('/api/admin/criteria', { name: newCriteria });
-      setCriteria([...criteria, criteriaItem]);
-      setNewCriteria('');
+      await apiCaller.put(`/api/admin/stages/${editingStage.id}`, { stage_name: editingStage.stage_name });
+      setStages(stages.map(stage => (stage.id === editingStage.id ? editingStage : stage)));
+      setEditingStage(null);
     } catch (error) {
-      console.error('Error creating criteria:', error);
+      console.error('Error updating stage:', error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Navbar (Tabs) */}
-      <div className="bg-blue-600 text-white p-4">
-        <h2 className="text-xl font-semibold">Referral Platform Settings</h2>
-      </div>
-
-      {/* Tabs Navigation */}
-      <div className="flex justify-center bg-gray-200 p-4 space-x-4">
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h2 className="text-xl font-semibold mb-4">Manage Stages</h2>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={newStage}
+          onChange={(e) => setNewStage(e.target.value)}
+          placeholder="Enter new stage name"
+          className="w-full p-2 border rounded"
+        />
         <button
-          onClick={() => setActiveTab('stages')}
-          className={`px-4 py-2 rounded-md ${activeTab === 'stages' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+          onClick={handleCreateStage}
+          className="mt-2 w-full bg-blue-500 text-white p-2 rounded"
         >
-          Stages
-        </button>
-        <button
-          onClick={() => setActiveTab('rewards')}
-          className={`px-4 py-2 rounded-md ${activeTab === 'rewards' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-        >
-          Rewards
-        </button>
-        <button
-          onClick={() => setActiveTab('criteria')}
-          className={`px-4 py-2 rounded-md ${activeTab === 'criteria' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-        >
-          Criteria
+          Create Stage
         </button>
       </div>
 
-      {/* Main Content */}
-      <div className="p-6">
-        {/* Content based on active tab */}
-        {activeTab === 'stages' && (
-          <div>
-            <div className="mb-4">
-              <input
-                type="text"
-                value={newStage}
-                onChange={(e) => setNewStage(e.target.value)}
-                placeholder="Enter new stage name"
-                className="w-full p-2 border rounded"
-              />
-              <button
-                onClick={handleCreateStage}
-                className="mt-2 w-full bg-blue-500 text-white p-2 rounded"
-              >
-                Create Stage
-              </button>
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Existing Stages</h3>
-              <ul className="mt-4 space-y-2">
-                {stages.map((stage) => (
-                  <li key={stage.id} className="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                    <span>{stage.name}</span>
-                    <div className="space-x-2">
-                      <button className="text-yellow-500">Edit</button>
-                      <button className="text-red-500">Delete</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'rewards' && (
-          <div>
-            <div className="mb-4">
-              <input
-                type="text"
-                value={newReward}
-                onChange={(e) => setNewReward(e.target.value)}
-                placeholder="Enter new reward"
-                className="w-full p-2 border rounded"
-              />
-              <button
-                onClick={handleCreateReward}
-                className="mt-2 w-full bg-green-500 text-white p-2 rounded"
-              >
-                Create Reward
-              </button>
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Existing Rewards</h3>
-              <ul className="mt-4 space-y-2">
-                {rewards.map((reward) => (
-                  <li key={reward.id} className="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                    <span>{reward.name}</span>
-                    <div className="space-x-2">
-                      <button className="text-yellow-500">Edit</button>
-                      <button className="text-red-500">Delete</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'criteria' && (
-          <div>
-            <div className="mb-4">
-              <input
-                type="text"
-                value={newCriteria}
-                onChange={(e) => setNewCriteria(e.target.value)}
-                placeholder="Enter new criteria"
-                className="w-full p-2 border rounded"
-              />
-              <button
-                onClick={handleCreateCriteria}
-                className="mt-2 w-full bg-purple-500 text-white p-2 rounded"
-              >
-                Create Criteria
-              </button>
-            </div>
-            <div>
-              <h3 className="font-semibold text-lg">Existing Criteria</h3>
-              <ul className="mt-4 space-y-2">
-                {criteria.map((criterion) => (
-                  <li key={criterion.id} className="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                    <span>{criterion.name}</span>
-                    <div className="space-x-2">
-                      <button className="text-yellow-500">Edit</button>
-                      <button className="text-red-500">Delete</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-      </div>
+      <h3 className="font-semibold text-lg">Existing Stages</h3>
+      <table className="w-full mt-4 bg-white shadow-md rounded">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="p-2">ID</th>
+            <th className="p-2">Stage Name</th>
+            <th className="p-2">Stage points</th>
+            <th className="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stages.map((stage) => (
+            <tr key={stage.id} className="border-b">
+              <td className="p-2 text-center">{stage.id}</td>
+              <td className="p-2 text-center">
+                {editingStage && editingStage.id === stage.id ? (
+                  <input
+                    type="text"
+                    value={editingStage.stage_name}
+                    onChange={(e) => setEditingStage({ ...editingStage, stage_name: e.target.value })}
+                    className="border p-1"
+                  />
+                ) : (
+                  stage.stage_name
+                )}
+              </td>
+              <td className="p-2 text-center">
+                {editingStage && editingStage.id === stage.id ? (
+                  <input
+                    type="text"
+                    value={editingStage.stage_points}
+                    onChange={(e) => setEditingStage({ ...editingStage, stage_points: e.target.value })}
+                    className="border p-1"
+                  />
+                ) : (
+                  stage.stage_points
+                )}
+              </td>
+              <td className="p-2 text-center">
+                {editingStage && editingStage.id === stage.id ? (
+                  <button className="text-green-500 mr-2" onClick={handleUpdateStage}>Save</button>
+                ) : (
+                  <button className="text-yellow-500 mr-2" onClick={() => setEditingStage(stage)}>Edit</button>
+                )}
+                <button className="text-red-500" onClick={() => handleDeleteStage(stage.id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
