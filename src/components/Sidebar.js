@@ -11,9 +11,8 @@ const Sidebar = ({ isAdmin = false }) => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  // Admin-specific sidebar content
   const adminSidebarContent = (
-    <ul className=''>
+    <ul className="">
       <li className="mb-4">
         <Link
           to="/admin/dashboard"
@@ -22,6 +21,7 @@ const Sidebar = ({ isAdmin = false }) => {
           Admin Dashboard
         </Link>
       </li>
+  
       <li className="mb-4">
         <Link
           to="/admin/users"
@@ -30,16 +30,31 @@ const Sidebar = ({ isAdmin = false }) => {
           Manage Users
         </Link>
       </li>
+  
       <li className="mb-4">
-        <Link
-          to="/admin/settings"
-          className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-        >
-          Admin Settings
-        </Link>
+        <span className="block p-2 font-semibold">Admin Settings</span>
+        <ul className="ml-4">
+          <li className="mb-2">
+            <Link
+              to="/admin/settings/stages"
+              className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+            >
+              Stage Settings
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/admin/settings/rewards"
+              className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+            >
+              Rewards Settings
+            </Link>
+          </li>
+        </ul>
       </li>
     </ul>
   );
+  
 
   // Normal user-specific sidebar content
   const userSidebarContent = (

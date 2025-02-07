@@ -16,23 +16,25 @@ import AdminUsers from './pages/admin/AdminUsers'; // Admin Users Page
 import AdminLogin from './pages/admin/AdminLogin';
 import { LoadingProvider } from './context/LoadingContext';
 import AdminSettings from './pages/admin/AdminSettings';
+import Stages from './pages/admin/Stages';
+import RewardsAdmin from './pages/admin/RewardsAdmin';
 
 // import Settings from './pages/Settings';
 
 // Main App Component
 const App = () => {
 
-  
+
   return (
     <LoadingProvider>
-    <Router>
-      <ThemeProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </ThemeProvider>
-      
-    </Router>
+      <Router>
+        <ThemeProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </ThemeProvider>
+
+      </Router>
     </LoadingProvider>
   );
 };
@@ -64,13 +66,13 @@ const AuthenticatedLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-     
+
       <div className="flex flex-1">
         {/* Sidebar */}
         <Sidebar />
         {/* Main Content */}
         <div className="flex-1 p-4">
-        <Header />
+          <Header />
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/referrals" element={<Referrals />} />
@@ -89,7 +91,7 @@ const AdminLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      
+
       <div className="flex flex-1">
         {/* Admin Sidebar */}
         <Sidebar isAdmin={true} />
@@ -98,7 +100,10 @@ const AdminLayout = () => {
           <Routes>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsers />} />
-            <Route path='/admin/settings' element ={<AdminSettings/>}/>
+            <Route path="/admin/settings" element={<AdminSettings />}>
+              <Route path="rewards" element={<RewardsAdmin />} />
+              <Route path="stages" element={<Stages />} />
+            </Route>
             <Route path="*" element={<Navigate to="/admin/dashboard" />} />
           </Routes>
         </div>
