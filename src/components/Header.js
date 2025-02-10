@@ -10,12 +10,28 @@ const Header = () => {
   const referralLink = user ? `${window.location.origin}/signup/${user.referralCode}` : '';
 
   const handleCopy = () => {
-    if (referralLink) {
+    if (!referralLink) return;
+  
+    if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(referralLink)
         .then(() => alert('Referral link copied to clipboard!'))
         .catch(() => alert('Failed to copy referral link.'));
+    } else {
+      // Fallback for unsupported browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = referralLink;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert('Referral link copied to clipboard!');
+      } catch (err) {
+        alert('Failed to copy referral link.');
+      }
+      document.body.removeChild(textArea);
     }
   };
+  
 
   const handleShare = (platform) => {
     const shareUrl = {

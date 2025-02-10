@@ -42,7 +42,7 @@ const Signup = () => {
     }
     const getFullPhoneNumber = () => {
       return `${countryCode.replace('+', '')}${phone.replace(/^0+/, '')}`; // Remove leading zeros and "+" sign
-  };
+    };
     // Trim leading zeros from the phone number
     // const formattedPhone = phone.replace(/^0+/, '');
 
@@ -55,7 +55,7 @@ const Signup = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phone: fullPhoneNumber, countryCode,firstName, lastName }),
+        body: JSON.stringify({ phone: fullPhoneNumber, countryCode, firstName, lastName }),
       });
 
       if (response.ok) {
@@ -80,7 +80,7 @@ const Signup = () => {
     }
     const getFullPhoneNumber = () => {
       return `${countryCode.replace('+', '')}${phone.replace(/^0+/, '')}`; // Remove leading zeros and "+" sign
-  };
+    };
     //
 
     // Trim leading zeros from the phone number
@@ -109,15 +109,20 @@ const Signup = () => {
         const data = await response.json();
         const { token, user } = data; // Assuming the API response contains both the token and user details
 
+        if (data.error){
+          navigate(`/signup/${code}`)
+        }
         // Authenticate the user with token and user data
         login(token, user);
         navigate('/');
       } else {
         const data = await response.json();
         setError(data.error || 'Invalid OTP');
+        navigate('/signup')
       }
     } catch (error) {
       setError('An error occurred while verifying OTP');
+      navigate('/signup')
     }
   };
 

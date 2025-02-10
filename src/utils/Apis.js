@@ -30,7 +30,7 @@ class ApiCaller {
   }
 
   // General request method to handle all HTTP methods
-  async request(endpoint, method = "GET", { body = null, setLoading = null, retries = 1 } = {}) {
+  async request(endpoint, method = "GET", { body = null, setLoading = null, retries = 0 } = {}) {
     const headers = this.getHeaders(body);
 
     const options = {
@@ -71,8 +71,7 @@ class ApiCaller {
         console.warn(`Retrying request... (${retries} retries left)`);
         return this.request(endpoint, method, { body, setLoading, retries: retries - 1 });
       } else {
-        console.error("API call error:", error);
-        throw error; // Throw error after retries are exhausted
+        
       }
     } finally {
       if (setLoading) setLoading(false); // Reset loading after the request
