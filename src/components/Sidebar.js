@@ -83,14 +83,7 @@ const Sidebar = ({ isAdmin = false }) => {
           Rewards
         </Link>
       </li>
-      <li className="mb-4">
-        <Link
-          to="/settings"
-          className="block p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
-        >
-          Settings
-        </Link>
-      </li>
+   
     </ul>
   );
 
